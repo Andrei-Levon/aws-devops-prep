@@ -170,3 +170,9 @@ resource "aws_instance" "web_server" {
     Name = "${var.environment}-python-web-server"
   }
 }
+
+# 8. Manage EC2 running vs stopped state without recreating resources
+resource "aws_ec2_instance_state" "web_server_state" {
+  instance_id = aws_instance.web_server.id
+  state       = var.server_state
+}

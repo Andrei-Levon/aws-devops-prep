@@ -14,6 +14,11 @@ output "instance_public_ip" {
 }
 
 output "server_url" {
-  value       = "http://${aws_instance.web_server.public_ip}"
+  value       = aws_instance.web_server.public_ip != "" ? "http://${aws_instance.web_server.public_ip}" : "Server is stopped (no public IP)"
   description = "HTTP URL to access the Python web server"
+}
+
+output "server_status" {
+  value       = aws_ec2_instance_state.web_server_state.state
+  description = "Operational state of the EC2 instance"
 }

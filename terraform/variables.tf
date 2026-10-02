@@ -33,3 +33,14 @@ variable "allowed_cidr_blocks" {
   description = "Allowed CIDR blocks for HTTP ingress (restrict to your IP if desired)"
   default     = ["0.0.0.0/0"]
 }
+
+variable "server_state" {
+  type        = string
+  description = "Target state of the EC2 instance ('running' or 'stopped')"
+  default     = "stopped"
+
+  validation {
+    condition     = contains(["running", "stopped"], var.server_state)
+    error_message = "server_state must be either 'running' or 'stopped'."
+  }
+}
