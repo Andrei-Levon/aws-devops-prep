@@ -71,3 +71,26 @@ terraform destroy
 3. **Subnet Sizing & AWS Reserved IPs**:
    - A `/24` subnet has $2^{(32-24)} = 256$ IPs.
    - **AWS reserves 5 IPs** in every subnet (`.0` network, `.1` VPC router, `.2` Amazon DNS, `.3` future use, `.255` broadcast). Usable: **251 IPs**.
+
+---
+
+## Next Steps & Roadmap
+
+Here is the planned progression to build out the full DevOps architecture:
+
+### 1. Layer 2: Docker Containerization
+- Replace the native Python host process with a containerized application running via Docker on EC2.
+- Practice container lifecycle management, port mapping (`-p 80:80`), and image building.
+
+### 2. Layer 3: IAM & AWS Systems Manager (SSM Session Manager)
+- Attach an IAM Instance Profile with `AmazonSSMManagedInstanceCore`.
+- Connect securely to the instance terminal via AWS Systems Manager (`aws ssm start-session`), completely eliminating the need for open SSH port 22 and static SSH key management.
+
+### 3. Layer 4: Production Networking & Reverse Proxy (ALB + Private Subnet)
+- Create a **Private Subnet** with no public IPs and move the server there.
+- Deploy an **Application Load Balancer (ALB)** in the Public Subnet to terminate public traffic and forward requests to the private backend.
+- (Optional): Introduce Nginx as a reverse proxy caching/routing layer.
+
+### 4. Layer 5: Automated CI/CD (GitHub Actions + OIDC)
+- Build a GitHub Actions workflow to run `terraform fmt`, `validate`, and `plan` on pull requests.
+- Authenticate GitHub Actions to AWS via **OIDC (OpenID Connect)** role assumption to avoid storing long-lived AWS access keys.
